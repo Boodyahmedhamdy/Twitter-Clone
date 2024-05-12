@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.RocketLaunch
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Topic
+import com.jetpack.compose.twitter_clone.R
 import com.jetpack.compose.twitter_clone.ui.componenets.NavigationDrawerBodyItem
 import com.jetpack.compose.twitter_clone.ui.states.ChatUiState
 import com.jetpack.compose.twitter_clone.ui.states.SpaceCardUiState
@@ -110,34 +111,19 @@ object LocalDataProvider {
         return messages[random.nextInt(messages.size)]
     }
 
-    fun generateRandomDate(): String {
-        val now = System.currentTimeMillis()
-        val randomDaysAgo = Random(now).nextInt(7)
-        val date = now - randomDaysAgo * 24 * 60 * 60 * 1000
-        return date.toString()
-    }
+//    fun generateRandomDate(): String {
+//        val now = System.currentTimeMillis()
+//        val randomDaysAgo = Random(now).nextInt(7)
+//        val date = now - randomDaysAgo * 24 * 60 * 60 * 1000
+//        return date.toString()
+//    }
 
     fun getHomeScreenTweets(): List<TweetUiState> {
-        return listOf(
-            TweetUiState(),
-            TweetUiState(),
-            TweetUiState(),
-            TweetUiState(),
-            TweetUiState(),
-            TweetUiState(),
-            TweetUiState(),
-        )
+        return generateRandomTweets(10)
     }
 
     fun getSpaces(): List<SpaceCardUiState> {
-        return listOf(
-            SpaceCardUiState(),
-            SpaceCardUiState(),
-            SpaceCardUiState(),
-            SpaceCardUiState(),
-            SpaceCardUiState(),
-            SpaceCardUiState(),
-        )
+        return generateRandomSpaceCards(10)
     }
 
     fun generateTrendingListItems(count: Int = 10): List<TrendingListItemUiState> {
@@ -157,6 +143,98 @@ object LocalDataProvider {
                 numberOfPosts = Random().nextInt()
             )
         }
+    }
+
+    fun generateRandomTweets(numTweets: Int): List<TweetUiState> {
+        val random = Random()
+        val tweets = mutableListOf<TweetUiState>()
+        for (i in 0 until numTweets) {
+            tweets.add(
+                TweetUiState(
+                    writerNickName = "User $i",
+                    writerUserName = "@User_$i",
+                    tweetPublishingDate = generateRandomDate(),
+                    tweetContent = generateRandomTweetContent(random),
+                    comments = random.nextInt(100),
+                    retweets = random.nextInt(1000),
+                    loves = random.nextInt(10000),
+                    shares = random.nextInt(1000)
+                )
+            )
+        }
+        return tweets
+    }
+
+    fun generateRandomDate(): String {
+        val month = (1..12).random()
+        val day = (1..30).random()
+        val year = 2023 + Random().nextInt(2) // Generate dates up to current year + 1
+        return "$month/$day/$year"
+    }
+
+    fun generateRandomTweetContent(random: Random): String {
+        val loremIpsum = """
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  """.trimIndent()
+        val maxLength = 280
+        val contentLength = random.nextInt(maxLength - 1) + 1 // Generate content between 1 and max characters
+        return loremIpsum.substring(0, contentLength)
+    }
+
+
+    fun generateRandomSpaceCards(numSpaces: Int): List<SpaceCardUiState> {
+        val random = Random()
+        val spaces = mutableListOf<SpaceCardUiState>()
+        for (i in 0 until numSpaces) {
+            spaces.add(
+                SpaceCardUiState(
+                    status = if (random.nextBoolean()) "LIVE" else "UPCOMING",
+                    title = generateRandomSpaceTitle(random),
+                    subtitles = generateRandomSubtitles(random),
+                    topListenersImageId = generateTopListenersImageIds(random),
+                    numberOfListener = random.nextInt(10000), // Up to 10k listeners
+                    hostNickName = "Host $i",
+                    hostDescription = generateRandomHostDescription(random)
+                )
+            )
+        }
+        return spaces
+    }
+
+    fun generateRandomSpaceTitle(random: Random): String {
+        val loremIpsum = """
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+  """.trimIndent()
+        val maxLength = 40
+        val contentLength = random.nextInt(maxLength - 1) + 1 // Generate content between 1 and max characters
+        return loremIpsum.substring(0, contentLength)
+    }
+
+    fun generateRandomSubtitles(random: Random): List<String> {
+        val numSubtitles = random.nextInt(3) + 1 // 1 to 3 subtitles
+        val subtitles = mutableListOf<String>()
+        for (i in 0 until numSubtitles) {
+            subtitles.add(generateRandomSpaceTitle(random)) // Reuse logic for shorter subtitles
+        }
+        return subtitles
+    }
+
+    fun generateTopListenersImageIds(random: Random): List<Int> {
+        val numListeners = random.nextInt(4) + 1 // 1 to 4 listeners
+        val listenerIds = mutableListOf<Int>()
+        for (i in 0 until numListeners) {
+            listenerIds.add(R.drawable.blue_white) // Replace with your placeholder image resource
+        }
+        return listenerIds
+    }
+
+    fun generateRandomHostDescription(random: Random): String {
+        val loremIpsum = """
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  """.trimIndent()
+        val maxLength = 30
+        val contentLength = random.nextInt(maxLength - 1) + 1 // Generate content between 1 and max characters
+        return loremIpsum.substring(0, contentLength)
     }
 
 
